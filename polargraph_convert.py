@@ -237,6 +237,7 @@ class PolargraphConverter:
         print(f"  - Max amplitude: {self.max_amplitude}")
         print(f"  - Organic mode: {self.organic_mode}")
         print(f"  - Contrast factor: {self.contrast_factor}")
+        print(f"  - White threshold: {self.white_threshold}")
         
         print("Generating SVG paths...")
         self.generate_svg(img, output_path)
