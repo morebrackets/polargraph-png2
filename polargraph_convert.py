@@ -136,11 +136,8 @@ class PolargraphConverter:
             # Get pixel brightness (0-255)
             brightness = pixels[x, row]
             
-            # Skip if too bright (white)
+            # Skip if too bright (white) - completely ignore to avoid unnecessary pen movements
             if brightness >= self.white_threshold:
-                # Add straight line point (no wave)
-                if len(points) == 0 or points[-1][1] != y_base:
-                    points.append((x, y_base))
                 continue
             
             # Calculate darkness (0.0 = white, 1.0 = black)

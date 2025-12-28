@@ -42,7 +42,7 @@ def create_example_image(filename='example_input.png', size=(300, 200)):
 
 def run_converter(input_file, output_file, extra_args=None):
     """Run the polargraph converter."""
-    cmd = ['python3', 'polargraph_convert.py', input_file, output_file]
+    cmd = [sys.executable, 'polargraph_convert.py', input_file, output_file]
     if extra_args:
         cmd.extend(extra_args)
     
