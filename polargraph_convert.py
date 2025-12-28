@@ -22,6 +22,21 @@ except ImportError:
 class PolargraphConverter:
     """Convert images to Polargraph SVG format with modulated horizontal paths."""
     
+    # Wave modulation constants
+    MIN_DARKNESS_THRESHOLD = 0.02  # Pixels below this darkness are considered white
+    FREQUENCY_BASE = 0.5  # Base frequency multiplier
+    FREQUENCY_SCALE = 1.5  # Additional frequency range based on darkness
+    
+    # Organic mode constants
+    ORGANIC_X_FREQUENCY = 0.05  # X-axis variation frequency
+    ORGANIC_Y_FREQUENCY = 0.1   # Y-axis (row) variation frequency
+    ORGANIC_NOISE_SCALE = 0.2   # Scale of organic noise
+    ORGANIC_AMPLITUDE_VAR = 0.3  # How much organic noise affects amplitude
+    ORGANIC_FREQUENCY_VAR = 0.2  # How much organic noise affects frequency
+    
+    # Wave calculation constant
+    WAVE_FREQUENCY_SCALE = 0.1  # Controls overall wave frequency
+    
     def __init__(
         self,
         line_spacing: float = 2.0,
@@ -80,7 +95,7 @@ class PolargraphConverter:
         Returns:
             Tuple of (amplitude, frequency_factor)
         """
-        if darkness < 0.02:  # Nearly white, skip
+        if darkness < self.MIN_DARKNESS_THRESHOLD:  # Nearly white, skip
             return 0.0, 0.0
         
         # Amplitude scales with darkness
@@ -88,14 +103,14 @@ class PolargraphConverter:
         
         # Frequency increases with darkness (darker = more wavy)
         # Base frequency: more cycles per unit length for darker areas
-        frequency_factor = 0.5 + (darkness * 1.5)
+        frequency_factor = self.FREQUENCY_BASE + (darkness * self.FREQUENCY_SCALE)
         
         # Add organic variation if enabled
         if self.organic_mode:
             # Subtle organic noise based on position
-            organic_noise = math.sin(x * 0.05 + row * 0.1) * 0.2
-            amplitude *= (1.0 + organic_noise * 0.3)
-            frequency_factor *= (1.0 + organic_noise * 0.2)
+            organic_noise = math.sin(x * self.ORGANIC_X_FREQUENCY + row * self.ORGANIC_Y_FREQUENCY) * self.ORGANIC_NOISE_SCALE
+            amplitude *= (1.0 + organic_noise * self.ORGANIC_AMPLITUDE_VAR)
+            frequency_factor *= (1.0 + organic_noise * self.ORGANIC_FREQUENCY_VAR)
         
         return amplitude, frequency_factor
     
@@ -136,7 +151,7 @@ class PolargraphConverter:
             
             # Calculate y-offset using sine wave
             # Frequency based on darkness and position
-            wave_offset = amplitude * math.sin(x * frequency_factor * 0.1)
+            wave_offset = amplitude * math.sin(x * frequency_factor * self.WAVE_FREQUENCY_SCALE)
             
             y = y_base + wave_offset
             points.append((x, y))

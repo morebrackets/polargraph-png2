@@ -80,6 +80,16 @@ python polargraph_convert.py landscape.png output.svg --organic --amplitude 4.0
 python polargraph_convert.py sketch.png output.svg --contrast 3.0
 ```
 
+## Quick Demo
+
+Try the example script to see the converter in action:
+
+```bash
+python example.py
+```
+
+This will create several example conversions with different settings, demonstrating the various features and parameters.
+
 ## How It Works
 
 1. **Image Preprocessing**: The input image is converted to grayscale and contrast-enhanced
