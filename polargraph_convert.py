@@ -114,19 +114,18 @@ class PolargraphConverter:
         
         return amplitude, frequency_factor
     
-    def generate_row_path(self, img: Image.Image, row: int, width: int) -> List[Tuple[float, float]]:
+    def generate_row_path(self, pixels, row: int, width: int) -> List[Tuple[float, float]]:
         """
         Generate coordinate points for a single horizontal row.
         
         Args:
-            img: Preprocessed grayscale image
+            pixels: Pixel access object from img.load()
             row: Row number (y-coordinate)
             width: Image width
             
         Returns:
             List of (x, y) coordinate tuples for this row
         """
-        pixels = img.load()
         y_base = row * self.line_spacing
         
         # Collect points for this row
@@ -187,6 +186,9 @@ class PolargraphConverter:
         """
         width, height = img.size
         
+        # Get pixel access object once for all rows
+        pixels = img.load()
+        
         # Calculate SVG dimensions
         svg_height = height * self.line_spacing
         
@@ -203,12 +205,11 @@ class PolargraphConverter:
         
         # Generate paths for each row
         for row in range(height):
-            points = self.generate_row_path(img, row, width)
+            points = self.generate_row_path(pixels, row, width)
             
             if points:
                 path_d = self.points_to_path_commands(points)
-                if path_d:
-                    svg_lines.append(f'    <path d="{path_d}"/>')
+                svg_lines.append(f'    <path d="{path_d}"/>')
         
         # Close SVG
         svg_lines.extend([
